@@ -1,5 +1,8 @@
+var express = require("express");
+const router = express.Router();
 var control = require('./controllers/controller');
 
-app.get("/insert", control.testGetMethod);
+router.get("/insert", control.testGetMethod);
+router.post("/login", control.authenticate);
 
-app.get("/login", control.authenticate);
+module.exports = router;
