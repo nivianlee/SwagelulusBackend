@@ -1,72 +1,35 @@
 var db = require('../db/db');
 
-const testGetMethod = (req, res, next) => {
-  console.log("testGetMethod run");
-  db.pool.getConnection((err, connection) => {
-    if (err) { 
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
-      return;
-    }
-
-    var query = "SELECT * FROM users";
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return; 
-      }
-      res.end(JSON.stringify(result));
-    });
-  });
-};
-
 /**
  * @param req.body
- *  @property {string} nric
+ *  @property {string} id
  * @param res
  *  @property {string} type (hcw, res)
  *  @property {boolean} isValid
- *  @property {string} id (orgID, nric)
+ *  @property {string} id (orgID, userID)
  */
-const authenticate = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) { 
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
-      return;
-    } 
-    var query = "SELECT * FROM restaurants WHERE resID = " + req.body.nric;
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return; 
-      }
-      if (result) {
-        var found = result[0];
-        console.log(found);
-        res.end(JSON.stringify(result));
-        return;
-      }
-    });
-    return;
-    query = "SELECT * FROM users WHERE userID = " + req.body.nric;
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return; 
-      }
-      if (result) {
-        res.end(JSON.stringify(result));
-        return;
-      }
-    });
-    res.end({isValid: false});
+
+const authenticate = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    if (results[0]) {
+      response.status(200).json(results[0]);
+    } else {
+      db.pool.query(`SELECT * FROM users WHERE userID = '${id}'`, [], (error, results) => {
+        if (error) {
+          throw error;
+        }
+        if (results[0]) {
+          response.status(200).json(results[0]);
+          console.log('id = user');
+        } else {
+          console.log('id does not belong to restaurant or user');
+        }
+      });
+    }
   });
 };
 
@@ -75,19 +38,19 @@ For all the restaurant owners
 */
 const addItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -96,19 +59,19 @@ const addItem = (req, res) => {
 
 const editItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -117,19 +80,19 @@ const editItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -138,19 +101,19 @@ const deleteItem = (req, res) => {
 
 const getOrder = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -162,19 +125,19 @@ HCW user methods
 */
 const viewItems = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -183,19 +146,19 @@ const viewItems = (req, res) => {
 
 const orderItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -207,19 +170,19 @@ Donator methods
 */
 const viewOrganisations = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
@@ -228,27 +191,38 @@ const viewOrganisations = (req, res) => {
 
 const selectOrganisation = (req, res) => {
   db.pool.getConnection((err, connection) => {
-    if (err) { 
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
 
-    var query = "SELECT * FROM users";
+    var query = 'SELECT * FROM users';
     connection.query(query, [], (err, result) => {
       connection.release();
       if (err) {
         console.log(err);
         res.status(400).end(JSON.stringify(err));
-        return; 
+        return;
       }
       res.end(JSON.stringify(result));
     });
   });
 };
 
+const getUsers = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM users`, [], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    if (results) {
+      response.status(200).json(results);
+    }
+  });
+};
+
 module.exports = {
-  testGetMethod,
   authenticate,
   addItem,
   editItem,
@@ -257,5 +231,6 @@ module.exports = {
   viewItems,
   orderItem,
   viewOrganisations,
-  selectOrganisation
+  selectOrganisation,
+  getUsers,
 };
