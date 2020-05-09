@@ -172,6 +172,15 @@ const viewItems = (req, res) => {
   });
 };
 
+/**
+ * @param req.body
+ *  @property {string} userID
+ *  @property {number} foodItemID
+ *  @property {number} quantity
+ *  @property {string} id
+ * @param res
+ *  @property {boolean} success
+ */
 const orderItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
@@ -193,8 +202,32 @@ const orderItem = (req, res) => {
   });
 };
 
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ *  @property {string} orgID
+ */
+const getOrgIdFromUserId = (request, response) => {
+  const id = request.params.userid;
+  db.pool.getConnection((err, connection) => {
+    var query = `SELECT orgID FROM users WHERE userID = '${id}'`;
+    connection.query(query, [], (err, result) => {
+      connection.release();
+      if (err) {
+        console.log(err);
+        res.status(400).end(JSON.stringify(err));
+        return;
+      }
+      response.end(JSON.stringify(result));
+    });
+  });
+};
+
+// orgID + userID + items in the cart ==> create a new Order object and add it to the order table ==> retrieve the Order ID of this order object
+// ==> for each item in the cart we will create an orderitem with the ordeRID and fooDID
 /*
-Donator methods
+Donor methods
 */
 const viewOrganisations = (req, res) => {
   db.pool.getConnection((err, connection) => {
@@ -258,6 +291,7 @@ module.exports = {
   getOrders,
   viewItems,
   orderItem,
+  getOrgIdFromUserId,
   viewOrganisations,
   selectOrganisation,
   getUsers,
