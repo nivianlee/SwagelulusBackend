@@ -222,7 +222,15 @@ const getOrderById = (request, response) => {
 };
 
 const getOrdersByUserId = (request, response) => {
-
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM orders WHERE userID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
 };
 
 const getOrdersByOrgId = (request, response) => {
