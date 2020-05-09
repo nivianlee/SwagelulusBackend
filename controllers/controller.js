@@ -274,6 +274,12 @@ const getRestaurantById = (request, response) => {
   }); 
 };
 
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ *  @property {array} restaurants
+ */
 const getAllRestaurants = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM restaurants`, [], (error, results) => {
@@ -286,6 +292,12 @@ const getAllRestaurants = (request, response) => {
   }); 
 };
 
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ *  @property {string} orgID
+ */
 const addItemToCart = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
@@ -359,37 +371,28 @@ const getAllOrganisations = (req, res) => {
   });
 };
 
-const getOrganisationById = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) {
+const getOrganisationById = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM organisations WHERE orgID = '${id}'`, [], (error, results) => {
+    if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
-
-    var query = 'SELECT * FROM users';
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      res.end(JSON.stringify(result));
-    });
-  });
+    response.status(200).json(results[0]);
+  }); 
 };
 
-const getUsersById = (request, response) => {
+const getUserById = (request, response) => {
   const id = request.body.id;
-  db.pool.query(`SELECT * FROM users`, [], (error, results) => {
+  db.pool.query(`SELECT * FROM users WHERE userID = '${id}'`, [], (error, results) => {
     if (error) {
-      throw error;
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
     }
-    if (results) {
-      response.status(200).json(results);
-    }
-  });
+    response.status(200).json(results[0]);
+  }); 
 };
 
 module.exports = {
@@ -397,6 +400,7 @@ module.exports = {
   donateToOrganisation,
   getDonationAmount,
   addItemToCart,
+  getOrgIdFromUserId,
   placeOrder,
   addItemToMenu,
   updateItem,
@@ -412,5 +416,5 @@ module.exports = {
   getOrdersByRestaurantId,
   getAllOrganisations,
   getOrganisationById,
-  getUsersById
+  getUserById
 };

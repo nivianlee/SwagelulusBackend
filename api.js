@@ -3,7 +3,7 @@ const router = express.Router();
 var control = require('./controllers/controller');
 
 router.post('/authenticate', control.authenticate);
-router.get('/getUsersById', control.getUsersById);
+router.post('/getUserById', control.getUserById);
 router.post('/addItemToMenu', control.addItemToMenu);
 router.post('/getOrdersByRestaurantId', control.getOrdersByRestaurantId);
 router.post('/getItemsByRestaurantId', control.getItemsByRestaurantId);
@@ -14,5 +14,7 @@ router.post('/getOrderItemsByOrderId', control.getOrderItemsByOrderId);
 router.post('/getOrdersByUserId', control.getOrdersByUserId);
 router.post('/getOrdersByOrgId', control.getOrdersByOrgId);
 router.get('/getAllRestaurants', control.getAllRestaurants);
+router.post('/getOrganisationById', control.getOrganisationById);
+
 
 module.exports = router;
