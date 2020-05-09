@@ -15,6 +15,6 @@ router.post('/getOrdersByUserId', control.getOrdersByUserId);
 router.post('/getOrdersByOrgId', control.getOrdersByOrgId);
 router.get('/getAllRestaurants', control.getAllRestaurants);
 router.post('/getOrganisationById', control.getOrganisationById);
-
+router.get('/getAllOrganisations', control.getAllOrganisations);
 
 module.exports = router;
