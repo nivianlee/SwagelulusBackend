@@ -45,7 +45,7 @@ const updateDonatedAmount = (request, response) => {
   const orgID = request.body.orgID;
   const amount = request.body.amount;
   db.pool.query(`UPDATE organisations SET donatedAmt = donatedAmt + '${amount}' WHERE orgID = '${orgID}' `, [], (error, results) => {
-    if (error) {
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
@@ -63,7 +63,7 @@ const updateDonatedAmount = (request, response) => {
 const getDonatedAmount = (request, response) => {
   const orgID = request.body.orgID;
   db.pool.query(`SELECT donatedAmt FROM organisations WHERE orgID = '${orgID}' `, [], (error, results) => {
-    if (error) {
+    if (err) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
