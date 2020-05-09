@@ -255,7 +255,15 @@ const getRestaurantById = (request, response) => {
 };
 
 const getAllRestaurants = (request, response) => {
-
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM restaurants`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
 };
 
 const addItemToCart = (req, res) => {
