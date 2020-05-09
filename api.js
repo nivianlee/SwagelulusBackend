@@ -6,5 +6,6 @@ router.post('/login', control.authenticate);
 router.get('/users', control.getUsers);
 router.post('/additem', control.addItem);
 router.post('/orders', control.getOrders);
+router.post('/items', control.getItems);
 
 module.exports = router;

@@ -151,25 +151,32 @@ const getOrders = (request, response) => {
 /*
 HCW user methods
 */
-const viewItems = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) {
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ *  @property {array} fooditems
+ */
+const getItems = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM fooditems WHERE resID = '${id}'`, [], (error, results) => {
+    if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    } 
+    response.status(200).json(results);
+  }); 
+};
 
-    var query = 'SELECT * FROM users';
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      res.end(JSON.stringify(result));
-    });
-  });
+const getRestaurants = (request, response) => {
+
+
 };
 
 const orderItem = (req, res) => {
@@ -196,7 +203,7 @@ const orderItem = (req, res) => {
 /*
 Donator methods
 */
-const viewOrganisations = (req, res) => {
+const getOrganisations = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -256,9 +263,10 @@ module.exports = {
   editItem,
   deleteItem,
   getOrders,
-  viewItems,
+  getItems,
+  getRestaurants,
   orderItem,
-  viewOrganisations,
+  getOrganisations,
   selectOrganisation,
-  getUsers,
+  getUsers
 };
