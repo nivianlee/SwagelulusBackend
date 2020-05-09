@@ -221,6 +221,12 @@ const getOrderById = (request, response) => {
   }); 
 };
 
+/**
+ * 
+ * @param {*} request 
+ *  @property {string} id
+ * @param {*} response 
+ */
 const getOrdersByUserId = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM orders WHERE userID = '${id}'`, [], (error, results) => {
@@ -233,8 +239,22 @@ const getOrdersByUserId = (request, response) => {
   }); 
 };
 
+/**
+ * 
+ * @param {*} request 
+ *  @property {string} id
+ * @param {*} response 
+ */
 const getOrdersByOrgId = (request, response) => {
-
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM orders WHERE orgID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
 };
 
 /**
