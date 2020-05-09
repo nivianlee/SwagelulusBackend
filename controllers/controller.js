@@ -50,7 +50,7 @@ const updateDonatedAmount = (request, response) => {
       res.status(400).end(JSON.stringify(err));
       return;
     }
-    var message = "Donation successful!";
+    var message = "Update successful!";
     response.status(200).end(message);
   }); 
 };
@@ -95,7 +95,7 @@ const addItemToMenu = (request, response) => {
       return;
     } 
     if (results[0]) {
-      db.pool.query(`INSERT INTO fooditems (name, description, image, price, resID) \n VALUES ('${name}','${desc}','${image}','${price}','${id}')`, [], (error, results) => {
+      db.pool.query(`INSERT INTO fooditems (name, description, image, price, resID) \n VALUES ('${name}','${desc}','${image}','${price}','${resID}')`, [], (error, results) => {
         if (error) {
           console.log(err);
           res.status(400).end(JSON.stringify(err));
