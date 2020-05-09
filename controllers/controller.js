@@ -169,12 +169,38 @@ const getItemsByRestaurantId = (request, response) => {
   }); 
 };
 
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ */
 const getItemById = (request, response) => {
-
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM fooditems WHERE fooditemID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
 };
 
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ */
 const getOrderItemsByOrderId = (request, response) => {
-
+  const id = request.body.id;
+  db.pool.query(`SELECT * from orderitems WHERE orderID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
 };
 
 /**
