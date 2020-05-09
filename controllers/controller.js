@@ -395,6 +395,22 @@ const getOrgOrdersPerMonth = (request, response) => {
   });
 };
 
+const getResOrdersPerMonth = (request, response) => {
+  db.pool.query(`select fi.resID, month(o.orderedAt) as month, year(o.orderedAt) as year, sum(fi.price*oi.quantity) as total
+  from orders o, orderitems oi, fooditems fi
+  where o.orderID = oi.orderID
+  and oi.foodItemID = fi.foodItemID
+  group by fi.resID, year(o.orderedAt), month(o.orderedAt)
+  order by fi.resID;`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  });
+};
+
 module.exports = {
   authenticate,
   getDonatedAmount,
@@ -413,5 +429,6 @@ module.exports = {
   getAllOrganisations,
   getOrganisationById,
   getUserById,
-  getOrgOrdersPerMonth
+  getOrgOrdersPerMonth,
+  getResOrdersPerMonth
 };
