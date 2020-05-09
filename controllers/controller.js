@@ -8,7 +8,6 @@ var db = require('../db/db');
  *  @property {boolean} isValid
  *  @property {string} id (orgID, userID)
  */
-
 const authenticate = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
@@ -36,9 +35,13 @@ const authenticate = (request, response) => {
   });
 };
 
-/*
-For all the restaurant owners
-*/
+const donateToOrganisation = (request, response) => {
+
+};
+
+const getDonationAmount = (request, response) => {
+
+};
 
 /**
  * @param req.body
@@ -50,7 +53,7 @@ For all the restaurant owners
  * @param res
  *  @property {boolean} success
  */
-const addItem = (request, response) => {
+const addItemToMenu = (request, response) => {
   const name = request.body.name;
   const desc = request.body.description;
   const image = request.body.image;
@@ -82,7 +85,7 @@ const addItem = (request, response) => {
 };
 
 // maybe later mater
-const editItem = (req, res) => {
+const updateItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -131,7 +134,7 @@ const deleteItem = (req, res) => {
  *  @property {array} orders
  */
 // resID ==> all foodIDs ==> go through each orderItem for each foodID we check orders
-const getOrders = (request, response) => {
+const getOrdersByRestaurantId = (request, response) => {
   const id = request.body.id;
   db.pool.query(
     `SELECT * FROM orders 
@@ -148,16 +151,13 @@ const getOrders = (request, response) => {
   });
 };
 
-/*
-HCW user methods
-*/
 /**
  * @param req.body
  *  @property {string} id
  * @param res
  *  @property {array} fooditems
  */
-const getItems = (request, response) => {
+const getItemsByRestaurantId = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM fooditems WHERE resID = '${id}'`, [], (error, results) => {
     if (error) {
@@ -165,21 +165,52 @@ const getItems = (request, response) => {
       res.status(400).end(JSON.stringify(err));
       return;
     }
-    if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
-      return;
-    } 
     response.status(200).json(results);
   }); 
 };
 
-const getRestaurants = (request, response) => {
-
+const getItemById = (request, response) => {
 
 };
 
-const orderItem = (req, res) => {
+const getOrderItemsByOrderId = (request, response) => {
+
+};
+
+const getOrdersById = (request, response) => {
+
+};
+
+const getOrdersByUserId = (request, response) => {
+
+};
+
+const getOrdersByOrgId = (request, response) => {
+
+};
+
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ */
+const getRestaurantById = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results[0]);
+  }); 
+};
+
+const getAllRestaurants = (request, response) => {
+
+};
+
+const addItemToCart = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -198,12 +229,16 @@ const orderItem = (req, res) => {
       res.end(JSON.stringify(result));
     });
   });
+};
+
+const placeOrder = (request, response) => {
+
 };
 
 /*
 Donator methods
 */
-const getOrganisations = (req, res) => {
+const getAllOrganisations = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -224,7 +259,7 @@ const getOrganisations = (req, res) => {
   });
 };
 
-const selectOrganisation = (req, res) => {
+const getOrganisationById = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -245,7 +280,7 @@ const selectOrganisation = (req, res) => {
   });
 };
 
-const getUsers = (request, response) => {
+const getUsersById = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM users`, [], (error, results) => {
     if (error) {
@@ -259,14 +294,23 @@ const getUsers = (request, response) => {
 
 module.exports = {
   authenticate,
-  addItem,
-  editItem,
+  donateToOrganisation,
+  getDonationAmount,
+  addItemToCart,
+  placeOrder,
+  addItemToMenu,
+  updateItem,
   deleteItem,
-  getOrders,
-  getItems,
-  getRestaurants,
-  orderItem,
-  getOrganisations,
-  selectOrganisation,
-  getUsers
+  getRestaurantById,
+  getAllRestaurants,
+  getItemById,
+  getItemsByRestaurantId,
+  getOrderItemsByOrderId,
+  getOrdersById,
+  getOrdersByOrgId,
+  getOrdersByUserId,
+  getOrdersByRestaurantId,
+  getAllOrganisations,
+  getOrganisationById,
+  getUsersById
 };

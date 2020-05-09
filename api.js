@@ -3,9 +3,10 @@ const router = express.Router();
 var control = require('./controllers/controller');
 
 router.post('/login', control.authenticate);
-router.get('/users', control.getUsers);
-router.post('/additem', control.addItem);
-router.post('/orders', control.getOrders);
-router.post('/items', control.getItems);
+router.get('/users', control.getUsersById);
+router.post('/additem', control.addItemToMenu);
+router.post('/orders', control.getOrdersByRestaurantId);
+router.post('/items', control.getItemsByRestaurantId);
+router.post('/getRestaurantById', control.getRestaurantById);
 
 module.exports = router;
