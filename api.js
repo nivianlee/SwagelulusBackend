@@ -22,5 +22,4 @@ router.post('/updateDonatedAmount', control.updateDonatedAmount);
 router.post('/getDonatedAmount', control.getDonatedAmount);
 router.post('/placeOrder', control.placeOrder);
 
-
 module.exports = router;
