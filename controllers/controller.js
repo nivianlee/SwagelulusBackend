@@ -55,8 +55,21 @@ const donateToOrganisation = (request, response) => {
   }); 
 };
 
-const getDonationAmount = (request, response) => {
-
+/**
+ * @param {*} request 
+ *  @property {string} id
+ * @param {number} response (the amount of monies)
+ */
+const getDonatedAmount = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT donatedAmt FROM organisations WHERE orgID = '${id}' `, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results[0]);
+  });
 };
 
 /**
@@ -405,7 +418,7 @@ const getUserById = (request, response) => {
 module.exports = {
   authenticate,
   donateToOrganisation,
-  getDonationAmount,
+  getDonatedAmount,
   addItemToCart,
   getOrgIdFromUserId,
   placeOrder,
