@@ -21,5 +21,7 @@ router.get('/getAllOrganisations', control.getAllOrganisations);
 router.post('/updateDonatedAmount', control.updateDonatedAmount);
 router.post('/getDonatedAmount', control.getDonatedAmount);
 router.post('/placeOrder', control.placeOrder);
+router.get('/getOrgOrdersPerMonth', control.getOrgOrdersPerMonth);
+router.get('/getResOrdersPerMonth', control.getResOrdersPerMonth);
 
 module.exports = router;
