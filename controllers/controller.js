@@ -35,8 +35,24 @@ const authenticate = (request, response) => {
   });
 };
 
+/**
+ * @param {*} request 
+ *  @property {string} id
+ *  @property {number} amount
+ * @param {*} response 
+ */
 const donateToOrganisation = (request, response) => {
-
+  const id = request.body.id;
+  const amount = request.body.amount;
+  db.pool.query(`UPDATE organisations SET donatedAmt = donatedAmt + '${amount}' WHERE orgID = '${id}' `, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    var message = "Donation successful!";
+    response.status(200).end(message);
+  }); 
 };
 
 const getDonationAmount = (request, response) => {

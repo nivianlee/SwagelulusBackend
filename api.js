@@ -16,5 +16,6 @@ router.post('/getOrdersByOrgId', control.getOrdersByOrgId);
 router.get('/getAllRestaurants', control.getAllRestaurants);
 router.post('/getOrganisationById', control.getOrganisationById);
 router.get('/getAllOrganisations', control.getAllOrganisations);
+router.post('/donateToOrganisation', control.donateToOrganisation);
 
 module.exports = router;
