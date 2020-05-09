@@ -177,8 +177,22 @@ const getOrderItemsByOrderId = (request, response) => {
 
 };
 
-const getOrdersById = (request, response) => {
-
+/**
+ * 
+ * @param {*} request 
+ *  @property {string} id
+ * @param {*} response 
+ */
+const getOrderById = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM orders WHERE orderID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
 };
 
 const getOrdersByUserId = (request, response) => {
@@ -306,7 +320,7 @@ module.exports = {
   getItemById,
   getItemsByRestaurantId,
   getOrderItemsByOrderId,
-  getOrdersById,
+  getOrderById,
   getOrdersByOrgId,
   getOrdersByUserId,
   getOrdersByRestaurantId,
