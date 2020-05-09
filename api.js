@@ -12,5 +12,6 @@ router.post('/getOrderById', control.getOrderById);
 router.post('/getItemById', control.getItemById);
 router.post('/getOrderItemsByOrderId', control.getOrderItemsByOrderId);
 router.post('/getOrdersByUserId', control.getOrdersByUserId);
+router.post('/getOrdersByOrgId', control.getOrdersByOrgId);
 
 module.exports = router;
