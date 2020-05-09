@@ -17,18 +17,18 @@ const authenticate = (request, response) => {
       return;
     }
     if (results[0]) {
-      response.status(200).json(results[0]);
+      response.status(200).json({ type: "res", isValid: true, id: results[0].resID });
     } else {
       db.pool.query(`SELECT * FROM users WHERE userID = '${id}'`, [], (error, results) => {
         if (error) {
           throw error;
         }
         if (results[0]) {
-          response.status(200).json(results[0]);
+          response.status(200).json({ type: "hcw", isValid: true, id: results[0].orgID });
           console.log('id = user');
         } else {
           console.log('id does not belong to restaurant or user');
-          response.status(200).json({ valid: false })
+          response.status(200).json({ isValid: false })
         }
       });
     }
@@ -257,7 +257,13 @@ const getRestaurantById = (request, response) => {
       res.status(400).end(JSON.stringify(err));
       return;
     }
-    response.status(200).json(results[0]);
+    if (results[0]) {
+      response.status(200).json(results[0]);
+    } else {
+      var message = "Sorry you do not own a restaurant.";
+      console.log(message);
+      response.status(200).end(JSON.stringify(message));
+    }
   }); 
 };
 
