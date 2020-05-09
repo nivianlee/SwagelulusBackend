@@ -8,7 +8,6 @@ var db = require('../db/db');
  *  @property {boolean} isValid
  *  @property {string} id (orgID, userID)
  */
-
 const authenticate = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
@@ -36,9 +35,13 @@ const authenticate = (request, response) => {
   });
 };
 
-/*
-For all the restaurant owners
-*/
+const donateToOrganisation = (request, response) => {
+
+};
+
+const getDonationAmount = (request, response) => {
+
+};
 
 /**
  * @param req.body
@@ -50,7 +53,7 @@ For all the restaurant owners
  * @param res
  *  @property {boolean} success
  */
-const addItem = (request, response) => {
+const addItemToMenu = (request, response) => {
   const name = request.body.name;
   const desc = request.body.description;
   const image = request.body.image;
@@ -82,7 +85,7 @@ const addItem = (request, response) => {
 };
 
 // maybe later mater
-const editItem = (req, res) => {
+const updateItem = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -131,7 +134,7 @@ const deleteItem = (req, res) => {
  *  @property {array} orders
  */
 // resID ==> all foodIDs ==> go through each orderItem for each foodID we check orders
-const getOrders = (request, response) => {
+const getOrdersByRestaurantId = (request, response) => {
   const id = request.body.id;
   db.pool.query(
     `SELECT * FROM orders 
@@ -148,40 +151,80 @@ const getOrders = (request, response) => {
   });
 };
 
-/*
-HCW user methods
-*/
-const viewItems = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) {
+/**
+ * @param req.body
+ *  @property {string} id
+ * @param res
+ *  @property {array} fooditems
+ */
+const getItemsByRestaurantId = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM fooditems WHERE resID = '${id}'`, [], (error, results) => {
+    if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
+    response.status(200).json(results);
+  }); 
+};
 
-    var query = 'SELECT * FROM users';
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      res.end(JSON.stringify(result));
-    });
-  });
+const getItemById = (request, response) => {
+
+};
+
+const getOrderItemsByOrderId = (request, response) => {
+
+};
+
+/**
+ * 
+ * @param {*} request 
+ *  @property {string} id
+ * @param {*} response 
+ */
+const getOrderById = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM orders WHERE orderID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results);
+  }); 
+};
+
+const getOrdersByUserId = (request, response) => {
+
+};
+
+const getOrdersByOrgId = (request, response) => {
+
 };
 
 /**
  * @param req.body
- *  @property {string} userID
- *  @property {number} foodItemID
- *  @property {number} quantity
  *  @property {string} id
  * @param res
- *  @property {boolean} success
  */
-const orderItem = (req, res) => {
+const getRestaurantById = (request, response) => {
+  const id = request.body.id;
+  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
+    if (error) {
+      console.log(err);
+      res.status(400).end(JSON.stringify(err));
+      return;
+    }
+    response.status(200).json(results[0]);
+  }); 
+};
+
+const getAllRestaurants = (request, response) => {
+
+};
+
+const addItemToCart = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -226,10 +269,14 @@ const getOrgIdFromUserId = (request, response) => {
 
 // orgID + userID + items in the cart ==> create a new Order object and add it to the order table ==> retrieve the Order ID of this order object
 // ==> for each item in the cart we will create an orderitem with the ordeRID and fooDID
+const placeOrder = (request, response) => {
+
+};
+
 /*
 Donor methods
 */
-const viewOrganisations = (req, res) => {
+const getAllOrganisations = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -250,7 +297,7 @@ const viewOrganisations = (req, res) => {
   });
 };
 
-const selectOrganisation = (req, res) => {
+const getOrganisationById = (req, res) => {
   db.pool.getConnection((err, connection) => {
     if (err) {
       console.log(err);
@@ -271,7 +318,7 @@ const selectOrganisation = (req, res) => {
   });
 };
 
-const getUsers = (request, response) => {
+const getUsersById = (request, response) => {
   const id = request.body.id;
   db.pool.query(`SELECT * FROM users`, [], (error, results) => {
     if (error) {
@@ -285,14 +332,23 @@ const getUsers = (request, response) => {
 
 module.exports = {
   authenticate,
-  addItem,
-  editItem,
+  donateToOrganisation,
+  getDonationAmount,
+  addItemToCart,
+  placeOrder,
+  addItemToMenu,
+  updateItem,
   deleteItem,
-  getOrders,
-  viewItems,
-  orderItem,
-  getOrgIdFromUserId,
-  viewOrganisations,
-  selectOrganisation,
-  getUsers,
+  getRestaurantById,
+  getAllRestaurants,
+  getItemById,
+  getItemsByRestaurantId,
+  getOrderItemsByOrderId,
+  getOrderById,
+  getOrdersByOrgId,
+  getOrdersByUserId,
+  getOrdersByRestaurantId,
+  getAllOrganisations,
+  getOrganisationById,
+  getUsersById
 };
