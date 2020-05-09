@@ -25,3 +25,48 @@ const testGetMethod = (req, res, next) => {
 module.exports = {
   testGetMethod
 };
+
+const authenticate = (req, res) => {
+
+};
+
+/*
+For all the restaurant owners
+*/
+const addItem = (req, res) => {
+
+};
+
+const editItem = (req, res) => {
+
+};
+
+const deleteItem = (req, res) => {
+
+};
+
+const getOrder = (req, res) => {
+
+};
+
+/*
+HCW user methods
+*/
+const viewItems = (req, res) => {
+
+};
+
+const orderItem = (req, res) => {
+
+};
+
+/*
+Donator methods
+*/
+const viewOrganisations = (req, res) => {
+
+};
+
+const selectOrganisation = (req, res) => {
+
+};

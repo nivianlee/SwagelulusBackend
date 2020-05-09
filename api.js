@@ -1,46 +1,5 @@
 var control = require('./controllers/controller');
 
-const authenticate = () => {
+app.get("/insert", control.testGetMethod);
 
-};
-
-/*
-For all the restaurant owners
-*/
-const addItem = () => {
-
-};
-
-const editItem = () => {
-
-};
-
-const deleteItem = () => {
-
-};
-
-const getOrder = () => {
-
-};
-
-/*
-HCW user methods
-*/
-const viewItems = () => {
-
-};
-
-const orderItem = () => {
-
-};
-
-/*
-Donator methods
-*/
-const viewOrganisations = () => {
-
-};
-
-const selectOrganisation = () => {
-
-};
+app.get("/login", control.authenticate);
