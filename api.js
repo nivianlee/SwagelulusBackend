@@ -23,5 +23,6 @@ router.post('/getDonatedAmount', control.getDonatedAmount);
 router.post('/placeOrder', control.placeOrder);
 router.get('/getOrgOrdersPerMonth', control.getOrgOrdersPerMonth);
 router.get('/getResOrdersPerMonth', control.getResOrdersPerMonth);
+router.post('/getNearbyRestaurants', control.getNearbyRestaurants);
 
 module.exports = router;

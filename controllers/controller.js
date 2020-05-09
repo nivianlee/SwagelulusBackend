@@ -345,8 +345,8 @@ Donor methods
 const getAllOrganisations = (request, response) => {
   db.pool.query(`SELECT * FROM organisations`, [], (error, results) => {
     if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
+      console.log(error);
+      response.status(400).end(JSON.stringify(error));
       return;
     }
     response.status(200).json(results);
@@ -357,8 +357,8 @@ const getOrganisationById = (request, response) => {
   const orgID = request.body.orgID;
   db.pool.query(`SELECT * FROM organisations WHERE orgID = '${orgID}'`, [], (error, results) => {
     if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
+      console.log(error);
+      response.status(400).end(JSON.stringify(error));
       return;
     }
     response.status(200).json(results[0]);
@@ -369,8 +369,8 @@ const getUserById = (request, response) => {
   const userID = request.body.userID;
   db.pool.query(`SELECT * FROM users WHERE userID = '${userID}'`, [], (error, results) => {
     if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
+      console.log(error);
+      response.status(400).end(JSON.stringify(error));
       return;
     }
     response.status(200).json(results[0]);
@@ -386,8 +386,8 @@ const getOrgOrdersPerMonth = (request, response) => {
   group by o.orgID, year(o.orderedAt), month(o.orderedAt)
   order by o.orgID;`, [], (error, results) => {
     if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
+      console.log(error);
+      res.status(400).end(JSON.stringify(error));
       return;
     }
     response.status(200).json(results);
@@ -402,8 +402,26 @@ const getResOrdersPerMonth = (request, response) => {
   group by fi.resID, year(o.orderedAt), month(o.orderedAt)
   order by fi.resID;`, [], (error, results) => {
     if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
+      console.log(error);
+      response.status(400).end(JSON.stringify(error));
+      return;
+    }
+    response.status(200).json(results);
+  });
+};
+
+/**
+ * @param {*} request 
+ *  @property {string} orgID
+ * @param {*} response 
+ *  @property {array} restaurants
+ */
+const getNearbyRestaurants = (request, response) => {
+  const orgID = request.body.orgID;
+  db.pool.query(`SELECT * FROM restaurants WHERE (SELECT Left(postalCode, 1)) = (SELECT left((SELECT postalCode FROM organisations WHERE orgID = ${orgID}), 1))`, [], (error, results) => {
+    if (error) {
+      console.log(error);
+      response.status(400).end(JSON.stringify(error));
       return;
     }
     response.status(200).json(results);
@@ -429,5 +447,6 @@ module.exports = {
   getOrganisationById,
   getUserById,
   getOrgOrdersPerMonth,
-  getResOrdersPerMonth
+  getResOrdersPerMonth,
+  getNearbyRestaurants
 };
