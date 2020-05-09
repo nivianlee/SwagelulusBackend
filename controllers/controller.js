@@ -37,14 +37,14 @@ const authenticate = (request, response) => {
 
 /**
  * @param {*} request 
- *  @property {string} id
+ *  @property {string} orgID
  *  @property {number} amount
  * @param {*} response 
  */
-const donateToOrganisation = (request, response) => {
-  const id = request.body.id;
+const updateDonatedAmount = (request, response) => {
+  const orgID = request.body.orgID;
   const amount = request.body.amount;
-  db.pool.query(`UPDATE organisations SET donatedAmt = donatedAmt + '${amount}' WHERE orgID = '${id}' `, [], (error, results) => {
+  db.pool.query(`UPDATE organisations SET donatedAmt = donatedAmt + '${amount}' WHERE orgID = '${orgID}' `, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -57,12 +57,12 @@ const donateToOrganisation = (request, response) => {
 
 /**
  * @param {*} request 
- *  @property {string} id
+ *  @property {string} orgID
  * @param {number} response (the amount of monies)
  */
 const getDonatedAmount = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT donatedAmt FROM organisations WHERE orgID = '${id}' `, [], (error, results) => {
+  const orgID = request.body.orgID;
+  db.pool.query(`SELECT donatedAmt FROM organisations WHERE orgID = '${orgID}' `, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -78,7 +78,7 @@ const getDonatedAmount = (request, response) => {
  *  @property {string} description
  *  @property {string} image
  *  @property {number} price
- *  @property {string} id
+ *  @property {string} resID
  * @param res
  *  @property {boolean} success
  */
@@ -87,8 +87,8 @@ const addItemToMenu = (request, response) => {
   const desc = request.body.description;
   const image = request.body.image;
   const price = request.body.price;
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
+  const resID = request.body.resID;
+  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${resID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -113,63 +113,21 @@ const addItemToMenu = (request, response) => {
   });
 };
 
-// maybe later mater
-const updateItem = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
-      return;
-    }
-
-    var query = 'SELECT * FROM users';
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      res.end(JSON.stringify(result));
-    });
-  });
-};
-
-const deleteItem = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
-      return;
-    }
-
-    var query = 'SELECT * FROM users';
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      res.end(JSON.stringify(result));
-    });
-  });
-};
 
 /**
  * @param req.body
- *  @property {string} id
+ *  @property {string} resID
  * @param res
  *  @property {array} orders
  */
 // resID ==> all foodIDs ==> go through each orderItem for each foodID we check orders
 const getOrdersByRestaurantId = (request, response) => {
-  const id = request.body.id;
+  const resID = request.body.resID;
   db.pool.query(
     `SELECT * FROM orders 
     WHERE orderID IN 
       (SELECT orderID FROM orderitems WHERE foodItemID IN 
-        (SELECT foodItemID FROM fooditems WHERE resID = '${id}'))
+        (SELECT foodItemID FROM fooditems WHERE resID = '${resID}'))
     AND deliveredAt IS NULL`, [], (error, results) => {
     if (error) {
       console.log(err);
@@ -182,13 +140,13 @@ const getOrdersByRestaurantId = (request, response) => {
 
 /**
  * @param req.body
- *  @property {string} id
+ *  @property {string} resID
  * @param res
  *  @property {array} fooditems
  */
 const getItemsByRestaurantId = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM fooditems WHERE resID = '${id}'`, [], (error, results) => {
+  const resID = request.body.resID;
+  db.pool.query(`SELECT * FROM fooditems WHERE resID = '${resID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -200,12 +158,12 @@ const getItemsByRestaurantId = (request, response) => {
 
 /**
  * @param req.body
- *  @property {string} id
+ *  @property {string} foodItemID
  * @param res
  */
 const getItemById = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM fooditems WHERE fooditemID = '${id}'`, [], (error, results) => {
+  const foodItemID = request.body.foodItemID;
+  db.pool.query(`SELECT * FROM fooditems WHERE foodItemID = '${foodItemID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -217,12 +175,12 @@ const getItemById = (request, response) => {
 
 /**
  * @param req.body
- *  @property {string} id
+ *  @property {string} orderID
  * @param res
  */
 const getOrderItemsByOrderId = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * from orderitems WHERE orderID = '${id}'`, [], (error, results) => {
+  const orderID = request.body.orderID;
+  db.pool.query(`SELECT * from orderitems WHERE orderID = '${orderID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -235,12 +193,12 @@ const getOrderItemsByOrderId = (request, response) => {
 /**
  * 
  * @param {*} request 
- *  @property {string} id
+ *  @property {string} orderID
  * @param {*} response 
  */
 const getOrderById = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM orders WHERE orderID = '${id}'`, [], (error, results) => {
+  const orderID = request.body.orderID;
+  db.pool.query(`SELECT * FROM orders WHERE orderID = '${orderID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -253,12 +211,12 @@ const getOrderById = (request, response) => {
 /**
  * 
  * @param {*} request 
- *  @property {string} id
+ *  @property {string} userID
  * @param {*} response 
  */
 const getOrdersByUserId = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM orders WHERE userID = '${id}'`, [], (error, results) => {
+  const userID = request.body.userID;
+  db.pool.query(`SELECT * FROM orders WHERE userID = '${userID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -271,12 +229,12 @@ const getOrdersByUserId = (request, response) => {
 /**
  * 
  * @param {*} request 
- *  @property {string} id
+ *  @property {string} orgID
  * @param {*} response 
  */
 const getOrdersByOrgId = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM orders WHERE orgID = '${id}'`, [], (error, results) => {
+  const orgID = request.body.orgID;
+  db.pool.query(`SELECT * FROM orders WHERE orgID = '${orgID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -288,12 +246,12 @@ const getOrdersByOrgId = (request, response) => {
 
 /**
  * @param req.body
- *  @property {string} id
+ *  @property {string} resID
  * @param res
  */
 const getRestaurantById = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${id}'`, [], (error, results) => {
+  const resID = request.body.resID;
+  db.pool.query(`SELECT * FROM restaurants WHERE resID = '${resID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -304,13 +262,10 @@ const getRestaurantById = (request, response) => {
 };
 
 /**
- * @param req.body
- *  @property {string} id
  * @param res
  *  @property {array} restaurants
  */
 const getAllRestaurants = (request, response) => {
-  const id = request.body.id;
   db.pool.query(`SELECT * FROM restaurants`, [], (error, results) => {
     if (error) {
       console.log(err);
@@ -322,65 +277,53 @@ const getAllRestaurants = (request, response) => {
 };
 
 /**
- * @param req.body
- *  @property {string} id
- * @param res
- *  @property {string} orgID
+ * 
+ * @param {*} request 
+ *  @property {array} fooditems (object of foodItemID : quantity)
+ *  @property {string} orderedAt
+ *  @property {string} userID
+ * @param {*} response 
  */
-const addItemToCart = (req, res) => {
-  db.pool.getConnection((err, connection) => {
-    if (err) {
+const placeOrder = (request, response) => {
+  const fooditems = request.body.fooditems;
+  const orderedAt = request.body.orderedAt;
+  const userID = request.body.userID;
+  db.pool.query(`SELECT orgID FROM users WHERE userID = '${userID}'`, [], (error, results) => {
+    if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
       return;
     }
-
-    var query = 'SELECT * FROM users';
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      res.end(JSON.stringify(result));
-    });
+    if (results) {
+      const orgID = results[0].orgID;
+      db.pool.query(`INSERT INTO orders (orderedAt, deliveredAt, orgID, userID)
+        VALUES ('${orderedAt}', NULL, ${orgID}, '${userID}')`, [], (error, results) => {
+        if (error) {
+          console.log(error);
+          response.status(400).end(JSON.stringify(error));
+          return;
+        }
+        if (results) {
+          const orderID = results.insertId;
+          fooditems.forEach(element => {
+            db.pool.query(`INSERT INTO orderitems (quantity, orderID, foodItemID)
+            VALUES (${element.quantity}, '${orderID}', '${element.foodItemID}')`)
+          });
+          response.status(200).end("Order successfully placed!");
+        } else {
+          response.status(200).end("");
+        }
+      });
+    } else {
+      response.status(200).end("");
+    }
   });
-};
-
-/**
- * @param req.body
- *  @property {string} id
- * @param res
- *  @property {string} orgID
- */
-const getOrgIdFromUserId = (request, response) => {
-  const id = request.params.userid;
-  db.pool.getConnection((err, connection) => {
-    var query = `SELECT orgID FROM users WHERE userID = '${id}'`;
-    connection.query(query, [], (err, result) => {
-      connection.release();
-      if (err) {
-        console.log(err);
-        res.status(400).end(JSON.stringify(err));
-        return;
-      }
-      response.end(JSON.stringify(result));
-    });
-  });
-};
-
-// orgID + userID + items in the cart ==> create a new Order object and add it to the order table ==> retrieve the Order ID of this order object
-// ==> for each item in the cart we will create an orderitem with the ordeRID and fooDID
-const placeOrder = (request, response) => {
-
 };
 
 /*
 Donor methods
 */
 const getAllOrganisations = (request, response) => {
-  const id = request.body.id;
   db.pool.query(`SELECT * FROM organisations`, [], (error, results) => {
     if (error) {
       console.log(err);
@@ -392,8 +335,8 @@ const getAllOrganisations = (request, response) => {
 };
 
 const getOrganisationById = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM organisations WHERE orgID = '${id}'`, [], (error, results) => {
+  const orgID = request.body.orgID;
+  db.pool.query(`SELECT * FROM organisations WHERE orgID = '${orgID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -404,8 +347,8 @@ const getOrganisationById = (request, response) => {
 };
 
 const getUserById = (request, response) => {
-  const id = request.body.id;
-  db.pool.query(`SELECT * FROM users WHERE userID = '${id}'`, [], (error, results) => {
+  const userID = request.body.userID;
+  db.pool.query(`SELECT * FROM users WHERE userID = '${userID}'`, [], (error, results) => {
     if (error) {
       console.log(err);
       res.status(400).end(JSON.stringify(err));
@@ -417,14 +360,10 @@ const getUserById = (request, response) => {
 
 module.exports = {
   authenticate,
-  donateToOrganisation,
   getDonatedAmount,
-  addItemToCart,
-  getOrgIdFromUserId,
+  updateDonatedAmount,
   placeOrder,
   addItemToMenu,
-  updateItem,
-  deleteItem,
   getRestaurantById,
   getAllRestaurants,
   getItemById,

@@ -2,6 +2,8 @@ var express = require('express');
 const router = express.Router();
 var control = require('./controllers/controller');
 
+//router.get('/boon/:userid/:', control.boon);
+
 router.post('/authenticate', control.authenticate);
 router.post('/getUserById', control.getUserById);
 router.post('/addItemToMenu', control.addItemToMenu);
@@ -16,7 +18,9 @@ router.post('/getOrdersByOrgId', control.getOrdersByOrgId);
 router.get('/getAllRestaurants', control.getAllRestaurants);
 router.post('/getOrganisationById', control.getOrganisationById);
 router.get('/getAllOrganisations', control.getAllOrganisations);
-router.post('/donateToOrganisation', control.donateToOrganisation);
+router.post('/updateDonatedAmount', control.updateDonatedAmount);
 router.post('/getDonatedAmount', control.getDonatedAmount);
+router.post('/placeOrder', control.placeOrder);
+
 
 module.exports = router;
