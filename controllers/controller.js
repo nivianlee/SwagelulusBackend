@@ -53,9 +53,10 @@ const updateDonatedAmount = (request, response) => {
         response.status(400).end(JSON.stringify(error));
         return;
       }
-      var message = "Update successful!";
+      var message = 'Update successful!';
       response.status(200).end(message);
-  }); 
+    }
+  );
 };
 
 /**
@@ -189,14 +190,20 @@ const getItemById = (request, response) => {
  */
 const getOrderItemsByOrderId = (request, response) => {
   const orderID = request.body.orderID;
-  db.pool.query(`SELECT * from orderitems WHERE orderID = '${orderID}'`, [], (error, results) => {
-    if (error) {
-      console.log(err);
-      res.status(400).end(JSON.stringify(err));
-      return;
+  db.pool.query(
+    `SELECT orderitems.*, fooditems.name FROM orderitems
+    INNER JOIN fooditems ON fooditems.foodItemID = orderitems.foodItemID
+    WHERE orderID = '${orderID}'`,
+    [],
+    (error, results) => {
+      if (error) {
+        console.log(err);
+        res.status(400).end(JSON.stringify(err));
+        return;
+      }
+      response.status(200).json(results);
     }
-    response.status(200).json(results);
-  });
+  );
 };
 
 /**
@@ -379,53 +386,65 @@ const getUserById = (request, response) => {
 
 // Statistics for Graphs
 const getOrgOrdersPerMonth = (request, response) => {
-  db.pool.query(`select o.orgID, month(o.orderedAt) as month, year(o.orderedAt) as year, sum(fi.price*oi.quantity) as total
+  db.pool.query(
+    `select o.orgID, month(o.orderedAt) as month, year(o.orderedAt) as year, sum(fi.price*oi.quantity) as total
   from orders o, orderitems oi, fooditems fi
   where o.orderID = oi.orderID
   and oi.foodItemID = fi.foodItemID
   group by o.orgID, year(o.orderedAt), month(o.orderedAt)
-  order by o.orgID;`, [], (error, results) => {
-    if (error) {
-      console.log(error);
-      res.status(400).end(JSON.stringify(error));
-      return;
+  order by o.orgID;`,
+    [],
+    (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(400).end(JSON.stringify(error));
+        return;
+      }
+      response.status(200).json(results);
     }
-    response.status(200).json(results);
-  });
+  );
 };
 
 const getResOrdersPerMonth = (request, response) => {
-  db.pool.query(`select fi.resID, month(o.orderedAt) as month, year(o.orderedAt) as year, sum(fi.price*oi.quantity) as total
+  db.pool.query(
+    `select fi.resID, month(o.orderedAt) as month, year(o.orderedAt) as year, sum(fi.price*oi.quantity) as total
   from orders o, orderitems oi, fooditems fi
   where o.orderID = oi.orderID
   and oi.foodItemID = fi.foodItemID
   group by fi.resID, year(o.orderedAt), month(o.orderedAt)
-  order by fi.resID;`, [], (error, results) => {
-    if (error) {
-      console.log(error);
-      response.status(400).end(JSON.stringify(error));
-      return;
+  order by fi.resID;`,
+    [],
+    (error, results) => {
+      if (error) {
+        console.log(error);
+        response.status(400).end(JSON.stringify(error));
+        return;
+      }
+      response.status(200).json(results);
     }
-    response.status(200).json(results);
-  });
+  );
 };
 
 /**
- * @param {*} request 
+ * @param {*} request
  *  @property {string} orgID
- * @param {*} response 
+ * @param {*} response
  *  @property {array} restaurants
  */
 const getNearbyRestaurants = (request, response) => {
   const orgID = request.body.orgID;
-  db.pool.query(`SELECT * FROM restaurants WHERE (SELECT Left(postalCode, 1)) = (SELECT left((SELECT postalCode FROM organisations WHERE orgID = ${orgID}), 1))`, [], (error, results) => {
-    if (error) {
-      console.log(error);
-      response.status(400).end(JSON.stringify(error));
-      return;
+  db.pool.query(
+    `SELECT * FROM restaurants WHERE (SELECT Left(postalCode, 1)) = (SELECT left((SELECT postalCode FROM organisations WHERE orgID = ${orgID}), 1))`,
+    [],
+    (error, results) => {
+      if (error) {
+        console.log(error);
+        response.status(400).end(JSON.stringify(error));
+        return;
+      }
+      response.status(200).json(results);
     }
-    response.status(200).json(results);
-  });
+  );
 };
 
 module.exports = {
@@ -448,5 +467,5 @@ module.exports = {
   getUserById,
   getOrgOrdersPerMonth,
   getResOrdersPerMonth,
-  getNearbyRestaurants
+  getNearbyRestaurants,
 };
